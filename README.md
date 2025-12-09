@@ -1,0 +1,24 @@
+# TODO
+- Implement active image highlight in the image band
+- Steal FlyPhotos's bottom navigation band, it's much smoother to scroll through it and needs no scrollbar
+- Proper settings
+- Scaling options/switcher (original fit, fit to container, fit to smaller dimension, cover)
+- Properly use the image cache for static and optimized bottom band
+- Dev mode (specifically to toggle the red square off)
+- Live updates for the folder and event stream from the native code
+- ffmpeg sidecar live transcoding for unsupported formats and transparency webgl shader
+- Thumbnails and metadata generated from native? Hard ffmpeg/ffprobe requirement
+- Startup screen for no files selected, open file icon (ctrl+o)
+- Zooming in could hide the image behind the bottom band and the topbar for aesthetics (background gloss?)
+- Show scale percentage when zooming in like FlyPhotos does, but don't let it stop scroll events (lol)
+- Test and continuously optimize for folders with up to 100k files (streaming and syncing client/server's gonna suck)
+- Bottom band scale cover/contain setting, scaling (FP uses 70/cover, IG uses 60/contain, 100h80w with 5px spacing plus filename)
+- Sometimes the app freezes in dev mode, so make sure it doesn't do that on release
+- Image rendering smooth/pixelated setting, but pixelated is clearly superior
+- Window effects toggling (Acrylic/transparent/opaque... I guess that last one is just changing the bg color)
+- Theming (oh god) background colors, text, accents, toggle background blurred TikTok cringe preview that was Robyn's idea, etc.
+- Make more resilient against files being updated in terms of cache/reload/event streaming/syncing
+- Toggle filenames in the bottom bar for IG-vs-FP modes
+- Rotate/flip images (but why? all the other apps do it, who uses it?)
+- Icons... basically all of them
+- Configure linters n' formatters
