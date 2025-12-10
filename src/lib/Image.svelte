@@ -3,6 +3,8 @@
     import { convertFileSrc } from "@tauri-apps/api/core";
     import { extensionIsVideo, getExtension } from "./utils";
 
+    const CHECKERBOARD_BACKGROUND = true;
+
     type ImageProps = {
         src: string;
         alt: string;
@@ -15,6 +17,7 @@
         onpointermove?: (e: PointerEvent) => void;
         onpointerup?: (e: PointerEvent) => void;
         onpointerleave?: (e: PointerEvent) => void;
+        ondblclick?: (e: MouseEvent) => void;
         onload?: (e: Event) => void;
         onloadedmetadata?: (e: Event) => void;
         elem?: HTMLElement;
@@ -32,6 +35,7 @@
         onpointermove,
         onpointerup,
         onpointerleave,
+        ondblclick,
         onload,
         onloadedmetadata,
         elem = $bindable()
@@ -80,6 +84,7 @@
             "file-image video",
             cls
         ]}
+        class:checkered={CHECKERBOARD_BACKGROUND}
         src={assetSrc}
         aria-label={alt}
         crossorigin={crossOrigin ? 'anonymous' : 'use-credentials'}
@@ -92,6 +97,7 @@
         {onpointermove}
         {onpointerup}
         {onpointerleave}
+        {ondblclick}
         {onload}
         {onloadedmetadata}
         bind:this={elem}
@@ -104,6 +110,7 @@
             "file-image image",
             cls
         ]}
+        class:checkered={CHECKERBOARD_BACKGROUND}
         src={assetSrc}
         alt={alt}
         crossorigin={crossOrigin ? 'anonymous' : 'use-credentials'}
@@ -113,7 +120,16 @@
         {onpointermove}
         {onpointerup}
         {onpointerleave}
+        {ondblclick}
         {onload}
         {onloadedmetadata}
      >
 {/if}
+
+<style lang="scss">
+    // TODO: Make this checkerboard not scale with the <img> transforms
+    // Done - with var(--scale)... so hacky haha
+    .checkered {
+        background: repeating-conic-gradient(#8f8f8f 0 25%, #bfbfbf 0 50%) 50% / calc(20px / var(--scale)) calc(20px / var(--scale));
+    }
+</style>

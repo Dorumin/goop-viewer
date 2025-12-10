@@ -66,7 +66,12 @@
         overscanCount={5}
     >
         <div slot="item" let:index let:style {style}>
-            <button class="image-container" onclick={() => select(index)} title={getFilename(files[index].path)}>
+            <button
+                class="image-container"
+                class:selected={files[index].path == store.state?.files.opened?.path}
+                onclick={() => select(index)}
+                title={getFilename(files[index].path)}
+            >
                 <Image
                     src={files[index].path}
                     alt="bruh"
@@ -118,6 +123,7 @@
         border: none;
         outline: none;
         flex-shrink: 0;
+        margin: 2px;
     }
 
     .image-container :global(.band-image) {
@@ -130,5 +136,10 @@
 
     .image-container:hover {
         background-color: rgba(255, 255, 255, .1);
+    }
+
+    .image-container.selected {
+        // Configure
+        outline: 2px solid lime;
     }
 </style>

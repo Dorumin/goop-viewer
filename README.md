@@ -10,15 +10,22 @@
 - Thumbnails and metadata generated from native? Hard ffmpeg/ffprobe requirement
 - Startup screen for no files selected, open file icon (ctrl+o)
 - Zooming in could hide the image behind the bottom band and the topbar for aesthetics (background gloss?)
+  - Backdrop filter with blur and brightness, filter settings could be useful on lots of elements
 - Show scale percentage when zooming in like FlyPhotos does, but don't let it stop scroll events (lol)
 - Test and continuously optimize for folders with up to 100k files (streaming and syncing client/server's gonna suck)
 - Bottom band scale cover/contain setting, scaling (FP uses 70/cover, IG uses 60/contain, 100h80w with 5px spacing plus filename)
 - Sometimes the app freezes in dev mode, so make sure it doesn't do that on release
 - Image rendering smooth/pixelated setting, but pixelated is clearly superior
+- ~~Checkered background for transparent images, toggleable, make it not scale with the image zoom~~
+- ~~Clamp zoom values like ImageGlass and don't crash on overflowing f32 like FlyPhotos (lol) (make adaptive to image size, 1-5%?)~~
 - Window effects toggling (Acrylic/transparent/opaque... I guess that last one is just changing the bg color)
+  - FlyPhotos has an *awesome* looking one, Frozen, that's implemented using a compositor of sorts. Would be great to steal!
+- Keyboard navigation (tabbing sorta works, but something better, more intuitive)
+  - Left/right for navigation, up/down not obvious; maybe panning, for crazy desktop manga readers
+  - Configurable start zoom mode and position (center, start, end) for this purpose
 - Theming (oh god) background colors, text, accents, toggle background blurred TikTok cringe preview that was Robyn's idea, etc.
 - Make more resilient against files being updated in terms of cache/reload/event streaming/syncing
 - Toggle filenames in the bottom bar for IG-vs-FP modes
-- Rotate/flip images (but why? all the other apps do it, who uses it?)
-- Icons... basically all of them
+- Rotate/flip images (but why? all the other apps do it, who even uses it?)
+- Icons... basically all of them, or any of them
 - Configure linters n' formatters

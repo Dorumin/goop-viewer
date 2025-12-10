@@ -3,15 +3,11 @@
     import Band from "$lib/Band.svelte";
     import Code from "$lib/Code.svelte";
     import Viewer from "$lib/Viewer.svelte";
-    import { invoke } from "@tauri-apps/api/core";
     import { store } from '$lib/store.svelte';
+    import terminal from 'virtual:terminal';
 
-    $effect(() => {
-        (async () => {
-            store.state = await invoke('initial_payload');
-            console.log(store.state);
-        })();
-    });
+    // @ts-ignore It's compatible enough
+    // globalThis.console = terminal;
 </script>
 
 <main class="container">
@@ -32,7 +28,7 @@
     </div>
 </main>
 
-<style>
+<style lang="scss">
     .popout {
         position: fixed;
         bottom: 0px;
@@ -63,7 +59,8 @@
 
         color: #f6f6f6;
         background-color: rgba(0, 0, 0, 0.8);
-        /* backdrop-filter: blur(5px); */
+        // Doesn't work
+        // backdrop-filter: blur(5px);
 
         font-synthesis: none;
         text-rendering: optimizeLegibility;

@@ -1,7 +1,15 @@
-use std::{path::{Path, PathBuf}, sync::{LazyLock, RwLock}};
+use std::{path::{Path, PathBuf}, sync::{LazyLock, OnceLock, RwLock}, time::Duration};
 use serde::Serialize;
 
-use tauri::async_runtime;
+use tauri::{AppHandle, Emitter, async_runtime};
+
+#[derive(Serialize, Clone)]
+#[serde(tag = "type", content = "payload", rename_all = "snake_case")]
+enum StateUpdate {
+    SetArgs(Vec<String>),
+    SetOpened(File),
+    ExtendFiles(Vec<File>)
+}
 
 #[derive(Default, Clone, Serialize)]
 pub struct AppState {
@@ -10,6 +18,46 @@ pub struct AppState {
     pub cache: Option<Cache>,
     pub files: Files,
     pub args: Vec<String>,
+}
+
+impl AppState {
+    pub fn update(&mut self, update: StateUpdate) {
+        if let Some(handle) = GLOBAL_APP_HANDLE.get() {
+            eprintln!("emitting state_update event");
+            handle.emit("state_update", &update).unwrap();
+        };
+
+        match update {
+            StateUpdate::SetArgs(args) => {
+                self.args = args;
+            }
+            StateUpdate::SetOpened(opened) => {
+                self.files.opened = Some(opened);
+            }
+            StateUpdate::ExtendFiles(files) => {
+                self.files.folder.extend(files);
+            },
+        }
+    }
+
+    pub fn set_args(&mut self, args: Vec<String>) {
+        if let Some(handle) = GLOBAL_APP_HANDLE.get() {
+            eprintln!("emitting set_args event");
+            handle.emit("set_args", &args).unwrap();
+            handle.emit("state_update", StateUpdate::SetArgs(vec![])).unwrap();
+        };
+
+        self.args = args;
+    }
+
+    pub fn extend_files(&mut self, files: Vec<File>) {
+        GLOBAL_APP_HANDLE.get().map(|handle| {
+            eprintln!("emitting extend_files event");
+            handle.emit("extend_files", &files)
+        });
+
+        self.files.folder.extend(files);
+    }
 }
 
 #[derive(Default, Clone, Serialize)]
@@ -33,6 +81,7 @@ pub struct File {
 }
 
 pub static GLOBAL_STATE: LazyLock<RwLock<AppState>> = LazyLock::new(|| RwLock::new(AppState::default()));
+pub static GLOBAL_APP_HANDLE: OnceLock<AppHandle> = OnceLock::new();
 
 pub fn default_file() -> Option<String> {
     #[cfg(debug_assertions)]
@@ -44,13 +93,18 @@ pub fn default_file() -> Option<String> {
 
 pub fn populate_state() {
     async_runtime::spawn(async {
-        let Some(file_path) = std::env::args().nth(1).or_else(default_file) else {
+        let args: Vec<_> = std::env::args().collect();
+        let file_path = args.get(1).cloned().or_else(default_file);
+
+        GLOBAL_STATE.write().unwrap().update(StateUpdate::SetArgs(args));
+
+        let Some(file_path) = file_path else {
             return;
         };
 
-        GLOBAL_STATE.write().unwrap().files.opened = Some(File {
+        GLOBAL_STATE.write().unwrap().update(StateUpdate::SetOpened(File {
             path: PathBuf::from(&file_path)
-        });
+        }));
 
         let path = PathBuf::from(file_path);
         let Some(directory) = path.parent() else {
@@ -73,6 +127,8 @@ pub fn populate_state() {
             }
         }
 
+        tokio::time::sleep(Duration::from_secs(2)).await;
+
         // files.sort_by(|a, b| natord::compare(a.path, b.path));
         // files.sort_unstable_by(|a, b|
         //     natlex_sort::nat_lex_byte_cmp(
@@ -81,7 +137,8 @@ pub fn populate_state() {
         //     )
         // );
 
-        GLOBAL_STATE.write().unwrap().files.folder.extend(files);
+
+        GLOBAL_STATE.write().unwrap().update(StateUpdate::ExtendFiles(files));
     });
 }
 

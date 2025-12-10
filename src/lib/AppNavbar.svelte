@@ -4,6 +4,7 @@
     import { attachHover, getFilename } from "./utils";
     import { Effect } from "@tauri-apps/api/window";
     import { store } from "./store.svelte";
+    import { zoom } from './Viewer.svelte';
 
     let gearHovered = $state(false);
     let effects = $state(0);
@@ -59,14 +60,25 @@
             let filename = getFilename(store.state.files.opened.path);
 
             title += ` | ${filename}`;
+
+            const zoomPercent = Math.round(zoom.target * 100);
+
+            title += ` | ${zoomPercent}%`;
         }
 
         return title;
     }
 </script>
 
-<div class="app-navbar" draggable="true" ondragstart={dragstart} role="toolbar" aria-label="Window controls" tabindex="0">
-    <div class="title">{getTitle()}</div>
+<div
+    class="app-navbar"
+    draggable="true"
+    ondragstart={dragstart}
+    role="toolbar"
+    aria-label="Window controls"
+    tabindex="-1"
+>
+    <div class="title" ondblclick={maximize} role="toolbar" tabindex="-1">{getTitle()}</div>
     <div class="buttons">
         <button class="button minimize" title="Settings" onclick={openSettings} {@attach attachHover(h => gearHovered = h)}>
             <GearIcon animating={gearHovered} />

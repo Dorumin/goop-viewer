@@ -19,8 +19,8 @@
         // When testing frontend changes, change to true
         // "focus": "false" doesn't seem to work to keep it from popping up when recompiling
         // But it does seem to (after an instant) stop it from stealing focus after recompiling
-        "focus": false,
         // "visible": false,
+        "focus": false,
         // "backgroundColor": "#333333",
         "windowEffects": {
           "effects": [
